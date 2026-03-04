@@ -2,20 +2,19 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>GRIBOCHKI CIPHER</title>
+<title>GRIBOCHKI</title>
 
 <style>
 body {
-    background: #050505;
-    color: #00ff88;
+    background: black;
+    color: #00ff66;
     font-family: monospace;
     text-align: center;
     padding: 20px;
 }
 
 h1 {
-    font-size: 30px;
-    text-shadow: 0 0 15px #00ff88;
+    text-shadow: 0 0 10px #00ff66;
 }
 
 .container {
@@ -27,10 +26,10 @@ h1 {
 
 textarea {
     width: 40%;
-    height: 220px;
-    background: black;
-    color: #00ff88;
-    border: 1px solid #00ff88;
+    height: 200px;
+    background: #111;
+    color: #00ff66;
+    border: 1px solid #00ff66;
     padding: 10px;
     font-size: 16px;
     resize: none;
@@ -40,8 +39,8 @@ select {
     margin: 15px;
     padding: 6px;
     background: black;
-    color: #00ff88;
-    border: 1px solid #00ff88;
+    color: #00ff66;
+    border: 1px solid #00ff66;
 }
 </style>
 </head>
@@ -61,54 +60,23 @@ select {
 
 <script>
 
-// ФИКСИРОВАННЫЙ словарь
-const cipherMap = {
-'а': ['@','7','q'],
-'б': ['%','T','2'],
-'в': ['&','L','8'],
-'г': ['#','Z','4'],
-'д': ['^','M','6'],
-'е': ['!','R','1'],
-'ё': ['~','X','5'],
-'ж': ['+','K','9'],
-'з': ['=','P','3'],
-'и': ['<','V','0'],
-'й': ['>','H','$'],
-'к': ['?','G','A'],
-'л': ['{','B','C'],
-'м': ['}','D','E'],
-'н': ['[','F','I'],
-'о': [']','J','N'],
-'п': ['(',')','O'],
-'р': ['*','Q','S'],
-'с': ['-','U','W'],
-'т': ['_','Y','a'],
-'у': ['b','c','d'],
-'ф': ['e','f','g'],
-'х': ['h','i','j'],
-'ц': ['k','l','m'],
-'ч': ['n','o','p'],
-'ш': ['r','s','t'],
-'щ': ['u','v','w'],
-'ъ': ['x','y','z'],
-'ы': ['1','2','3'],
-'ь': ['4','5','6'],
-'э': ['7','8','9'],
-'ю': ['!','?',';'],
-'я': [':','/','|'],
-' ': ['.','~','`'],
-'.': [',','<','>'],
-',': [';','+','='],
-'!': ['^','%','&'],
-'?': ['#','$','*']
-};
+const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя .,!?";
+const symbolPool = "!@#$%^&*()_+-=<>?/{}[]~1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-// Создание обратной карты
-const reverseMap = {};
-for (let letter in cipherMap) {
-    cipherMap[letter].forEach(sym => {
-        reverseMap[sym] = letter;
-    });
+let cipherMap = {};
+let reverseMap = {};
+let usedSymbols = [];
+let symbolIndex = 0;
+
+// создаём фиксированную карту
+for (let char of alphabet) {
+    cipherMap[char] = [];
+    for (let i = 0; i < 3; i++) {
+        let symbol = symbolPool[symbolIndex];
+        cipherMap[char].push(symbol);
+        reverseMap[symbol] = char;
+        symbolIndex++;
+    }
 }
 
 function encrypt(text) {
@@ -143,6 +111,7 @@ document.getElementById("input").addEventListener("input", function() {
         document.getElementById("output").value = decrypt(text);
     }
 });
+
 </script>
 
 </body>
