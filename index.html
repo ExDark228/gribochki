@@ -1,8 +1,9 @@
 <script>
 
+window.onload = function() {
+
 const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя .,!?";
 
-// Генерируем фиксированные 3-символьные коды
 let cipherMap = {};
 let reverseMap = {};
 
@@ -14,7 +15,6 @@ function generateCode(index) {
     return a + b + c;
 }
 
-// создаём карту
 alphabet.split("").forEach((char, index) => {
     let code = generateCode(index);
     cipherMap[char] = code;
@@ -27,8 +27,6 @@ function encrypt(text) {
     for (let char of text) {
         if (cipherMap[char]) {
             result += cipherMap[char];
-        } else {
-            result += char;
         }
     }
     return result;
@@ -55,5 +53,7 @@ document.getElementById("input").addEventListener("input", function() {
         document.getElementById("output").value = decrypt(text);
     }
 });
+
+};
 
 </script>
