@@ -2,51 +2,31 @@
 
 const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя .,!?";
 
-// Генерируем ВСЕ печатные ASCII символы
-let symbolPool = "";
-for (let i = 33; i <= 126; i++) {
-    symbolPool += String.fromCharCode(i);
-}
-
-// Добавляем безопасные Unicode символы
-symbolPool += "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿";
-
-// Превращаем в массив
-symbolPool = symbolPool.split("");
-
+// Генерируем фиксированные 3-символьные коды
 let cipherMap = {};
 let reverseMap = {};
-let used = new Set();
-let poolIndex = 0;
 
-function getUniqueSymbol() {
-    if (poolIndex >= symbolPool.length) {
-        console.error("Символы закончились!");
-        return "?";
-    }
-    let sym = symbolPool[poolIndex];
-    used.add(sym);
-    poolIndex++;
-    return sym;
+function generateCode(index) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let a = chars[index % chars.length];
+    let b = chars[Math.floor(index / chars.length) % chars.length];
+    let c = chars[Math.floor(index / (chars.length * chars.length)) % chars.length];
+    return a + b + c;
 }
 
-// создаём фиксированную карту
-for (let char of alphabet) {
-    cipherMap[char] = [];
-    for (let i = 0; i < 3; i++) {
-        let sym = getUniqueSymbol();
-        cipherMap[char].push(sym);
-        reverseMap[sym] = char;
-    }
-}
+// создаём карту
+alphabet.split("").forEach((char, index) => {
+    let code = generateCode(index);
+    cipherMap[char] = code;
+    reverseMap[code] = char;
+});
 
 function encrypt(text) {
     text = text.toLowerCase();
     let result = "";
     for (let char of text) {
         if (cipherMap[char]) {
-            let arr = cipherMap[char];
-            result += arr[Math.floor(Math.random() * 3)];
+            result += cipherMap[char];
         } else {
             result += char;
         }
@@ -56,11 +36,10 @@ function encrypt(text) {
 
 function decrypt(text) {
     let result = "";
-    for (let char of text) {
-        if (reverseMap[char]) {
-            result += reverseMap[char];
-        } else {
-            result += char;
+    for (let i = 0; i < text.length; i += 3) {
+        let chunk = text.substring(i, i + 3);
+        if (reverseMap[chunk]) {
+            result += reverseMap[chunk];
         }
     }
     return result;
