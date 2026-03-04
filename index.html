@@ -69,16 +69,15 @@ button:hover {
 
 <div class="container">
 
-<div style="width:50%">
+<div style="width:40%">
 <textarea id="input" placeholder="Ввод" style="width:100%"></textarea>
 </div>
 
-<div style="width:50%">
+<div style="width:40%">
 <textarea id="output" placeholder="Вывод" readonly style="width:100%"></textarea>
 <br>
 <button onclick="copyText()">📋 Скопировать</button>
 <button onclick="clearText()">🧹 Очистить</button>
-<button onclick="swapText()">🔁 Поменять</button>
 </div>
 
 </div>
@@ -173,15 +172,7 @@ function clearText() {
     document.getElementById("input").value = "";
     document.getElementById("output").value = "";
 }
-    
-function swapText() {
-    let input = document.getElementById("input");
-    let output = document.getElementById("output");
 
-    let temp = input.value;
-    input.value = output.value;
-    output.value = temp;
-}
 
 </script>
 
