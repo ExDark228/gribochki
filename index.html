@@ -2,19 +2,20 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Грибной Шифратор</title>
+<title>GRIBOCHKI CIPHER</title>
+
 <style>
 body {
-    background: black;
-    color: #00ff00;
+    background: #050505;
+    color: #00ff88;
     font-family: monospace;
     text-align: center;
     padding: 20px;
 }
 
 h1 {
-    font-size: 32px;
-    text-shadow: 0 0 10px #00ff00;
+    font-size: 30px;
+    text-shadow: 0 0 15px #00ff88;
 }
 
 .container {
@@ -26,26 +27,27 @@ h1 {
 
 textarea {
     width: 40%;
-    height: 200px;
-    background: #111;
-    color: #00ff00;
-    border: 1px solid #00ff00;
+    height: 220px;
+    background: black;
+    color: #00ff88;
+    border: 1px solid #00ff88;
     padding: 10px;
     font-size: 16px;
+    resize: none;
 }
 
 select {
-    margin: 10px;
-    padding: 5px;
+    margin: 15px;
+    padding: 6px;
     background: black;
-    color: #00ff00;
-    border: 1px solid #00ff00;
+    color: #00ff88;
+    border: 1px solid #00ff88;
 }
 </style>
 </head>
 <body>
 
-<h1>🍄 ГРИБОЧКИ ШИФР 🍄</h1>
+<h1>🍄 GRIBOCHKI CIPHER 🍄</h1>
 
 <select id="mode">
     <option value="encrypt">Русский → Шифр</option>
@@ -53,45 +55,68 @@ select {
 </select>
 
 <div class="container">
-    <textarea id="input" placeholder="Ввод"></textarea>
-    <textarea id="output" placeholder="Вывод" readonly></textarea>
+<textarea id="input" placeholder="Ввод"></textarea>
+<textarea id="output" placeholder="Вывод" readonly></textarea>
 </div>
 
 <script>
 
-// Алфавит
-const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя .,!?";
+// ФИКСИРОВАННЫЙ словарь
+const cipherMap = {
+'а': ['@','7','q'],
+'б': ['%','T','2'],
+'в': ['&','L','8'],
+'г': ['#','Z','4'],
+'д': ['^','M','6'],
+'е': ['!','R','1'],
+'ё': ['~','X','5'],
+'ж': ['+','K','9'],
+'з': ['=','P','3'],
+'и': ['<','V','0'],
+'й': ['>','H','$'],
+'к': ['?','G','A'],
+'л': ['{','B','C'],
+'м': ['}','D','E'],
+'н': ['[','F','I'],
+'о': [']','J','N'],
+'п': ['(',')','O'],
+'р': ['*','Q','S'],
+'с': ['-','U','W'],
+'т': ['_','Y','a'],
+'у': ['b','c','d'],
+'ф': ['e','f','g'],
+'х': ['h','i','j'],
+'ц': ['k','l','m'],
+'ч': ['n','o','p'],
+'ш': ['r','s','t'],
+'щ': ['u','v','w'],
+'ъ': ['x','y','z'],
+'ы': ['1','2','3'],
+'ь': ['4','5','6'],
+'э': ['7','8','9'],
+'ю': ['!','?',';'],
+'я': [':','/','|'],
+' ': ['.','~','`'],
+'.': [',','<','>'],
+',': [';','+','='],
+'!': ['^','%','&'],
+'?': ['#','$','*']
+};
 
-// Генерация 3 уникальных символов для каждой буквы
-const symbols = "!@#$%^&*()_+-=<>?/{}[]~1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-let map = {};
-let reverseMap = {};
-
-let used = [];
-
-function getRandomSymbol() {
-    let s;
-    do {
-        s = symbols[Math.floor(Math.random() * symbols.length)];
-    } while (used.includes(s));
-    used.push(s);
-    return s;
-}
-
-alphabet.split("").forEach(letter => {
-    map[letter] = [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()];
-    map[letter].forEach(sym => {
+// Создание обратной карты
+const reverseMap = {};
+for (let letter in cipherMap) {
+    cipherMap[letter].forEach(sym => {
         reverseMap[sym] = letter;
     });
-});
+}
 
 function encrypt(text) {
-    let result = "";
     text = text.toLowerCase();
+    let result = "";
     for (let char of text) {
-        if (map[char]) {
-            let arr = map[char];
+        if (cipherMap[char]) {
+            let arr = cipherMap[char];
             result += arr[Math.floor(Math.random() * 3)];
         }
     }
@@ -118,7 +143,6 @@ document.getElementById("input").addEventListener("input", function() {
         document.getElementById("output").value = decrypt(text);
     }
 });
-
 </script>
 
 </body>
