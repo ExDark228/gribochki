@@ -42,6 +42,19 @@ select {
     color: #00ff66;
     border: 1px solid #00ff66;
 }
+
+button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: black;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #003300;
+}
 </style>
 </head>
 
@@ -56,32 +69,33 @@ select {
 
 <div class="container">
 <textarea id="input" placeholder="Ввод"></textarea>
+
+<div>
 <textarea id="output" placeholder="Вывод" readonly></textarea>
+<br>
+<button onclick="copyText()">📋 Скопировать</button>
+</div>
 </div>
 
 <script>
 
 window.onload = function() {
 
-const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя .,!?";
+const cipherMap = {
+'а': 'Xp7','б': 'qL2','в': 'mZ9','г': 'Rt4','д': 'Kb8',
+'е': 'Ny3','ё': 'Vz6','ж': 'Hs1','з': 'Qw5','и': 'Tc0',
+'й': 'Ua9','к': 'Df7','л': 'Px2','м': 'Gr8','н': 'Zo4',
+'о': 'Lm6','п': 'Jt3','р': 'Se9','с': 'Wx1','т': 'Bc5',
+'у': 'Ev7','ф': 'Iy2','х': 'Or8','ц': 'Kd4','ч': 'Mz6',
+'ш': 'Qa1','щ': 'Hp5','ъ': 'Tu9','ы': 'Ls3','ь': 'Xc8',
+'э': 'Rg2','ю': 'Vk7','я': 'Bn4',
+' ': 'Zx9','.' : 'Aa5',',' : 'Pp2','!' : 'Yy7','?' : 'Qq3'
+};
 
-let cipherMap = {};
 let reverseMap = {};
-
-function generateCode(index) {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let a = chars[index % chars.length];
-    let b = chars[Math.floor(index / chars.length) % chars.length];
-    let c = chars[Math.floor(index / (chars.length * chars.length)) % chars.length];
-    return a + b + c;
+for (let key in cipherMap) {
+    reverseMap[cipherMap[key]] = key;
 }
-
-// создаём карту
-alphabet.split("").forEach((char, index) => {
-    let code = generateCode(index);
-    cipherMap[char] = code;
-    reverseMap[code] = char;
-});
 
 function encrypt(text) {
     text = text.toLowerCase();
@@ -117,6 +131,13 @@ document.getElementById("input").addEventListener("input", function() {
 });
 
 };
+
+function copyText() {
+    const output = document.getElementById("output");
+    output.select();
+    document.execCommand("copy");
+    alert("Текст скопирован!");
+}
 
 </script>
 
