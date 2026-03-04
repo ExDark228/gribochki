@@ -2,35 +2,41 @@
 
 const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя .,!?";
 
-// Большой пул безопасных символов (работают в Telegram / Discord)
-const symbolPool = 
-"!@#$%^&*()_+-=<>?/{}[]~`|" +
-"0123456789" +
-"ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-"abcdefghijklmnopqrstuvwxyz";
+// Генерируем ВСЕ печатные ASCII символы
+let symbolPool = "";
+for (let i = 33; i <= 126; i++) {
+    symbolPool += String.fromCharCode(i);
+}
+
+// Добавляем безопасные Unicode символы
+symbolPool += "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿";
+
+// Превращаем в массив
+symbolPool = symbolPool.split("");
 
 let cipherMap = {};
 let reverseMap = {};
 let used = new Set();
+let poolIndex = 0;
 
-// функция получения уникального символа
 function getUniqueSymbol() {
-    for (let char of symbolPool) {
-        if (!used.has(char)) {
-            used.add(char);
-            return char;
-        }
+    if (poolIndex >= symbolPool.length) {
+        console.error("Символы закончились!");
+        return "?";
     }
-    return null; // если закончились
+    let sym = symbolPool[poolIndex];
+    used.add(sym);
+    poolIndex++;
+    return sym;
 }
 
 // создаём фиксированную карту
 for (let char of alphabet) {
     cipherMap[char] = [];
     for (let i = 0; i < 3; i++) {
-        let symbol = getUniqueSymbol();
-        cipherMap[char].push(symbol);
-        reverseMap[symbol] = char;
+        let sym = getUniqueSymbol();
+        cipherMap[char].push(sym);
+        reverseMap[sym] = char;
     }
 }
 
@@ -42,7 +48,7 @@ function encrypt(text) {
             let arr = cipherMap[char];
             result += arr[Math.floor(Math.random() * 3)];
         } else {
-            result += char; // если символа нет в карте
+            result += char;
         }
     }
     return result;
