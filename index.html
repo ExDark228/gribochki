@@ -1,81 +1,36 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<title>GRIBOCHKI</title>
-
-<style>
-body {
-    background: black;
-    color: #00ff66;
-    font-family: monospace;
-    text-align: center;
-    padding: 20px;
-}
-
-h1 {
-    text-shadow: 0 0 10px #00ff66;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-textarea {
-    width: 40%;
-    height: 200px;
-    background: #111;
-    color: #00ff66;
-    border: 1px solid #00ff66;
-    padding: 10px;
-    font-size: 16px;
-    resize: none;
-}
-
-select {
-    margin: 15px;
-    padding: 6px;
-    background: black;
-    color: #00ff66;
-    border: 1px solid #00ff66;
-}
-</style>
-</head>
-<body>
-
-<h1>🍄 GRIBOCHKI CIPHER 🍄</h1>
-
-<select id="mode">
-    <option value="encrypt">Русский → Шифр</option>
-    <option value="decrypt">Шифр → Русский</option>
-</select>
-
-<div class="container">
-<textarea id="input" placeholder="Ввод"></textarea>
-<textarea id="output" placeholder="Вывод" readonly></textarea>
-</div>
-
 <script>
 
 const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя .,!?";
-const symbolPool = "!@#$%^&*()_+-=<>?/{}[]~1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+// Большой пул безопасных символов (работают в Telegram / Discord)
+const symbolPool = 
+"!@#$%^&*()_+-=<>?/{}[]~`|" +
+"0123456789" +
+"ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+"abcdefghijklmnopqrstuvwxyz";
 
 let cipherMap = {};
 let reverseMap = {};
-let usedSymbols = [];
-let symbolIndex = 0;
+let used = new Set();
+
+// функция получения уникального символа
+function getUniqueSymbol() {
+    for (let char of symbolPool) {
+        if (!used.has(char)) {
+            used.add(char);
+            return char;
+        }
+    }
+    return null; // если закончились
+}
 
 // создаём фиксированную карту
 for (let char of alphabet) {
     cipherMap[char] = [];
     for (let i = 0; i < 3; i++) {
-        let symbol = symbolPool[symbolIndex];
+        let symbol = getUniqueSymbol();
         cipherMap[char].push(symbol);
         reverseMap[symbol] = char;
-        symbolIndex++;
     }
 }
 
@@ -86,6 +41,8 @@ function encrypt(text) {
         if (cipherMap[char]) {
             let arr = cipherMap[char];
             result += arr[Math.floor(Math.random() * 3)];
+        } else {
+            result += char; // если символа нет в карте
         }
     }
     return result;
@@ -96,6 +53,8 @@ function decrypt(text) {
     for (let char of text) {
         if (reverseMap[char]) {
             result += reverseMap[char];
+        } else {
+            result += char;
         }
     }
     return result;
@@ -113,6 +72,3 @@ document.getElementById("input").addEventListener("input", function() {
 });
 
 </script>
-
-</body>
-</html>
