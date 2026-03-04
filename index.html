@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>🍄 Gribochki Cipher</title>
+
+<style>
+body {
+    background: black;
+    color: #00ff66;
+    font-family: monospace;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    text-shadow: 0 0 15px #00ff66;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+textarea {
+    width: 40%;
+    height: 220px;
+    background: #111;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+    padding: 10px;
+    font-size: 16px;
+    resize: none;
+}
+
+select {
+    margin: 15px;
+    padding: 6px;
+    background: black;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🍄 GRIBOCHKI CIPHER 🍄</h1>
+
+<select id="mode">
+    <option value="encrypt">Русский → Шифр</option>
+    <option value="decrypt">Шифр → Русский</option>
+</select>
+
+<div class="container">
+<textarea id="input" placeholder="Ввод"></textarea>
+<textarea id="output" placeholder="Вывод" readonly></textarea>
+</div>
+
+<script>
+
+window.onload = function() {
+
+const alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя .,!?";
+
+let cipherMap = {};
+let reverseMap = {};
+
+function generateCode(index) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let a = chars[index % chars.length];
+    let b = chars[Math.floor(index / chars.length) % chars.length];
+    let c = chars[Math.floor(index / (chars.length * chars.length)) % chars.length];
+    return a + b + c;
+}
+
+// создаём карту
+alphabet.split("").forEach((char, index) => {
+    let code = generateCode(index);
+    cipherMap[char] = code;
+    reverseMap[code] = char;
+});
+
+function encrypt(text) {
+    text = text.toLowerCase();
+    let result = "";
+    for (let char of text) {
+        if (cipherMap[char]) {
+            result += cipherMap[char];
+        }
+    }
+    return result;
+}
+
+function decrypt(text) {
+    let result = "";
+    for (let i = 0; i < text.length; i += 3) {
+        let chunk = text.substring(i, i + 3);
+        if (reverseMap[chunk]) {
+            result += reverseMap[chunk];
+        }
+    }
+    return result;
+}
+
+document.getElementById("input").addEventListener("input", function() {
+    const mode = document.getElementById("mode").value;
+    const text = this.value;
+
+    if (mode === "encrypt") {
+        document.getElementById("output").value = encrypt(text);
+    } else {
+        document.getElementById("output").value = decrypt(text);
+    }
+});
+
+};
+
+</script>
+
+</body>
+</html>
